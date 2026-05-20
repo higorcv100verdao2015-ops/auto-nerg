@@ -123,7 +123,7 @@ export function PublicHome({ onAdminAccess }: PublicHomeProps) {
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {portfolio.map((item) => (
               <article key={item.title} className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                <div className="aspect-[4/3] bg-gray-100">
+                <div className="aspect-[3/4] bg-gray-100">
                   <img src={item.src} alt={item.title} className="h-full w-full object-cover" />
                 </div>
                 <div className="p-5">
