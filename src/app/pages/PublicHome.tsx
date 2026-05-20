@@ -54,19 +54,15 @@ export function PublicHome({ onAdminAccess }: PublicHomeProps) {
     <div className="bg-white text-gray-900">
       <section className="relative min-h-[calc(100vh-76px)] overflow-hidden bg-[#061527] text-white">
         <img
-          src={painelImage}
-          alt="Painel eletrico montado pela Auto&Nerg"
-          className="absolute inset-0 h-full w-full object-cover opacity-40"
+          src={logoImage}
+          alt="Auto&Nerg Eletrotecnica"
+          className="absolute inset-0 h-full w-full object-cover object-center opacity-55"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#061527] via-[#061527]/85 to-[#061527]/35" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#061527]/95 via-[#061527]/78 to-[#061527]/35" />
+        <div className="absolute inset-0 bg-black/20" />
 
         <div className="relative mx-auto flex min-h-[calc(100vh-76px)] max-w-7xl flex-col justify-center px-4 py-16 md:px-8">
           <div className="max-w-3xl">
-            <img
-              src={logoImage}
-              alt="Auto&Nerg Eletrotecnica"
-              className="mb-8 h-28 w-28 rounded-2xl object-cover shadow-2xl md:h-36 md:w-36"
-            />
             <h1 className="max-w-4xl text-4xl font-bold leading-tight md:text-6xl">
               Auto&Nerg Eletrotecnica
             </h1>
