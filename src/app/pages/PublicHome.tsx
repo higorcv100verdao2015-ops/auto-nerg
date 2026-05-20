@@ -21,7 +21,7 @@ interface PublicHomeProps {
   onAdminAccess: () => void;
 }
 
-const whatsappUrl = 'https://wa.me/5565999999999?text=Ola%2C%20vim%20pelo%20site%20da%20Auto%26Nerg%20e%20quero%20solicitar%20um%20atendimento.';
+const whatsappUrl = 'https://wa.me/5565993578674?text=Ola%2C%20vim%20pelo%20site%20da%20Auto%26Nerg%20e%20quero%20solicitar%20um%20orcamento.';
 
 const services = [
   {
@@ -73,7 +73,7 @@ export function PublicHome({ onAdminAccess }: PublicHomeProps) {
               <a href={whatsappUrl} target="_blank" rel="noreferrer">
                 <Button size="lg">
                   <MessageCircle size={20} />
-                  Solicitar atendimento
+                  Solicite um orcamento
                 </Button>
               </a>
               <Button size="lg" variant="outline" onClick={onAdminAccess}>
@@ -150,7 +150,7 @@ export function PublicHome({ onAdminAccess }: PublicHomeProps) {
             ))}
             <a href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex pt-4">
               <Button>
-                Falar pelo WhatsApp
+                Solicite um orcamento
                 <ArrowRight size={18} />
               </Button>
             </a>
