@@ -31,7 +31,7 @@ export function Header({ onMenuClick, title, isAdmin, showMenu, onHomeClick, onA
               <Zap size={24} className="text-black" />
             </div>
             <div>
-              <h1 className="font-bold text-xl">Auto&Nerg</h1>
+              <h1 className="font-bold text-xl">Aut&Nerg</h1>
               <p className="text-xs text-[#FFD700]">Eletrotécnica</p>
             </div>
           </button>

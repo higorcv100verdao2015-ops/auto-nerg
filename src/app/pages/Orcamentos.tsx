@@ -146,7 +146,7 @@ export function Orcamentos() {
 
   const enviarWhatsApp = (orcamento: Orcamento) => {
     const message = encodeURIComponent(
-      `🔌 *Auto&Nerg - Eletrotécnica*\n\n` +
+      `🔌 *Aut&Nerg - Eletrotécnica*\n\n` +
       `Olá! Segue o orçamento para seu projeto:\n\n` +
       `📋 Orçamento #${orcamento.id}\n` +
       `👤 Cliente: ${orcamento.cliente}\n` +

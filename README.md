@@ -1,6 +1,6 @@
-# Auto&Nerg
+# Aut&Nerg
 
-Sistema React + Vite para gestao da Auto&Nerg.
+Sistema React + Vite para gestao da Aut&Nerg.
 
 ## Rodar local
 

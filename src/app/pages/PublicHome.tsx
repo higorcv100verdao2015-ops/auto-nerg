@@ -55,7 +55,7 @@ export function PublicHome({ onAdminAccess }: PublicHomeProps) {
       <section className="relative min-h-[calc(100vh-76px)] overflow-hidden bg-[#061527] text-white">
         <img
           src={logoImage}
-          alt="Auto&Nerg Eletrotecnica"
+          alt="Aut&Nerg Eletrotecnica"
           className="absolute inset-0 h-full w-full object-cover object-center opacity-55"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#061527]/95 via-[#061527]/78 to-[#061527]/35" />
@@ -64,7 +64,7 @@ export function PublicHome({ onAdminAccess }: PublicHomeProps) {
         <div className="relative mx-auto flex min-h-[calc(100vh-76px)] max-w-7xl flex-col justify-center px-4 py-16 md:px-8">
           <div className="max-w-3xl">
             <h1 className="max-w-4xl text-4xl font-bold leading-tight md:text-6xl">
-              Auto&Nerg Eletrotecnica
+              Aut&Nerg Eletrotecnica
             </h1>
             <p className="mt-5 max-w-2xl text-lg text-blue-50 md:text-2xl">
               Inovacao e solucoes em energia para instalacoes, comandos eletricos e manutencao eletrotecnica.

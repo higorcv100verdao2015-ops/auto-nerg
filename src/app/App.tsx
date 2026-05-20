@@ -114,7 +114,7 @@ export default function App() {
         <footer className="bg-white border-t border-gray-200 py-4 px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-2">
             <p className="text-sm text-gray-600">
-              © 2026 Auto&Nerg - Eletrotécnica. Todos os direitos reservados.
+              © 2026 Aut&Nerg - Eletrotécnica. Todos os direitos reservados.
             </p>
             <p className="text-sm text-gray-500">
               Sistema de Gestão v1.0.0

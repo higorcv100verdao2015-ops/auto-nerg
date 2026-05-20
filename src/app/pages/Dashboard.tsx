@@ -62,7 +62,7 @@ export function Dashboard({ onNavigate, isAdmin }: DashboardProps) {
             <Zap size={32} className="text-black" />
           </div>
           <div>
-            <h2 className="text-2xl">Bem-vindo à Auto&Nerg</h2>
+            <h2 className="text-2xl">Bem-vindo à Aut&Nerg</h2>
             <p className="text-gray-300">Organize seus serviços eletrotécnicos com eficiência</p>
           </div>
         </div>

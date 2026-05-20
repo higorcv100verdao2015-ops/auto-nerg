@@ -69,7 +69,7 @@ export function Sidebar({ isOpen, onClose, currentPage, onNavigate, isAdmin }: S
                 <Zap size={28} className="text-black" />
               </div>
               <div>
-                <h2 className="font-bold text-lg">Auto&Nerg</h2>
+                <h2 className="font-bold text-lg">Aut&Nerg</h2>
                 <p className="text-xs text-[#FFD700]">Eletrotécnica</p>
               </div>
             </div>
@@ -113,7 +113,7 @@ export function Sidebar({ isOpen, onClose, currentPage, onNavigate, isAdmin }: S
         <div className="p-4 border-t border-[#2d2d2d]">
           <div className="bg-[#2d2d2d] p-4 rounded-lg">
             <p className="text-sm text-gray-400">Versão 1.0.0</p>
-            <p className="text-xs text-gray-500 mt-1">© 2026 Auto&Nerg</p>
+            <p className="text-xs text-gray-500 mt-1">© 2026 Aut&Nerg</p>
           </div>
         </div>
       </aside>

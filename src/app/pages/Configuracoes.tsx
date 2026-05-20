@@ -6,7 +6,7 @@ import { Settings, Building2, Upload, Save } from 'lucide-react';
 
 export function Configuracoes() {
   const [configEmpresa, setConfigEmpresa] = useState({
-    nomeEmpresa: 'Auto&Nerg - Eletrotécnica',
+    nomeEmpresa: 'Aut&Nerg - Eletrotécnica',
     cnpj: '00.000.000/0001-00',
     telefone: '(11) 98765-4321',
     email: 'contato@autonerg.com.br',
@@ -235,7 +235,7 @@ export function Configuracoes() {
             </div>
             <div className="flex justify-between py-2 border-b border-gray-100">
               <span className="text-gray-600">Desenvolvido por:</span>
-              <span>Auto&Nerg - Eletrotécnica</span>
+              <span>Aut&Nerg - Eletrotécnica</span>
             </div>
             <div className="flex justify-between py-2 border-b border-gray-100">
               <span className="text-gray-600">Última Atualização:</span>

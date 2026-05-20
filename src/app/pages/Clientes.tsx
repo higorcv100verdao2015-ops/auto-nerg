@@ -136,7 +136,7 @@ export function Clientes() {
 
   const handleOpenWhatsApp = (whatsapp: string, nome: string) => {
     const message = encodeURIComponent(
-      `Ola ${nome}! Aqui e da Auto&Nerg - Eletrotecnica. Como posso ajuda-lo?`
+      `Ola ${nome}! Aqui e da Aut&Nerg - Eletrotecnica. Como posso ajuda-lo?`
     );
     window.open(`https://wa.me/${whatsapp}?text=${message}`, '_blank');
   };
