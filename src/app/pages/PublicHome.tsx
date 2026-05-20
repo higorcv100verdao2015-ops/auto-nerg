@@ -26,7 +26,7 @@ const whatsappUrl = 'https://wa.me/5565999999999?text=Ola%2C%20vim%20pelo%20site
 const services = [
   {
     title: 'Comandos eletricos',
-    description: 'Montagem, organizacao e manutencao de paineis para motores, bombas e sistemas industriais.',
+    description: 'Montagem, organizacao e manutencao de paineis para motores, comandos e sistemas industriais.',
     icon: Zap
   },
   {
@@ -43,7 +43,7 @@ const services = [
 
 const portfolio = [
   { src: painelImage, title: 'Painel de comando', description: 'Montagem organizada com protecoes e comandos dedicados.' },
-  { src: bombasImage, title: 'Sistema de bombas', description: 'Automacao e acionamento para conjunto motobomba.' },
+  { src: bombasImage, title: 'Comando industrial', description: 'Automacao, acionamento e protecao para equipamentos eletricos.' },
   { src: medicaoImage, title: 'Medicao em campo', description: 'Inspecao com alicate amperimetro e verificacao de carga.' },
   { src: bombasFinalImage, title: 'Entrega tecnica', description: 'Painel fechado e sistema em funcionamento.' },
   { src: comandoImage, title: 'Painel industrial', description: 'Manutencao e ajustes em painel de automacao.' }
@@ -51,7 +51,7 @@ const portfolio = [
 
 export function PublicHome({ onAdminAccess }: PublicHomeProps) {
   return (
-    <div className="bg-white text-gray-900">
+    <div className="bg-[#061527] text-white">
       <section className="relative min-h-[calc(100vh-76px)] overflow-hidden bg-[#061527] text-white">
         <img
           src={logoImage}
@@ -67,7 +67,7 @@ export function PublicHome({ onAdminAccess }: PublicHomeProps) {
               Auto&Nerg Eletrotecnica
             </h1>
             <p className="mt-5 max-w-2xl text-lg text-blue-50 md:text-2xl">
-              Inovacao e solucoes em energia para instalacoes, comandos eletricos, manutencao e sistemas de bombeamento.
+              Inovacao e solucoes em energia para instalacoes, comandos eletricos e manutencao eletrotecnica.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a href={whatsappUrl} target="_blank" rel="noreferrer">
@@ -85,46 +85,46 @@ export function PublicHome({ onAdminAccess }: PublicHomeProps) {
         </div>
       </section>
 
-      <section className="bg-[#f7fafc] px-4 py-14 md:px-8">
+      <section className="bg-[#08203a] px-4 py-14 md:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-3">
           {services.map((service) => {
             const Icon = service.icon;
 
             return (
-              <article key={service.title} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                <div className="mb-5 inline-flex rounded-lg bg-[#FFD700] p-3 text-black">
+              <article key={service.title} className="rounded-lg border border-[#0b6f9f]/60 bg-[#061527] p-6 shadow-lg shadow-black/20">
+                <div className="mb-5 inline-flex rounded-lg bg-[#ff7a18] p-3 text-white">
                   <Icon size={26} />
                 </div>
-                <h2 className="text-xl font-semibold text-gray-900">{service.title}</h2>
-                <p className="mt-3 text-gray-600">{service.description}</p>
+                <h2 className="text-xl font-semibold text-white">{service.title}</h2>
+                <p className="mt-3 text-blue-100">{service.description}</p>
               </article>
             );
           })}
         </div>
       </section>
 
-      <section className="px-4 py-16 md:px-8">
+      <section className="bg-[#061527] px-4 py-16 md:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase text-[#0b6f9f]">Trabalhos realizados</p>
-              <h2 className="mt-2 text-3xl font-bold text-gray-900">Servicos com acabamento tecnico e seguranca</h2>
+              <p className="text-sm font-semibold uppercase text-[#ff7a18]">Trabalhos realizados</p>
+              <h2 className="mt-2 text-3xl font-bold text-white">Servicos com acabamento tecnico e seguranca</h2>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <ClipboardCheck size={18} className="text-green-600" />
+            <div className="flex items-center gap-2 text-sm text-blue-100">
+              <ClipboardCheck size={18} className="text-[#ff7a18]" />
               Atendimento para residencias, comercios e industria
             </div>
           </div>
 
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {portfolio.map((item) => (
-              <article key={item.title} className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                <div className="aspect-[3/4] bg-gray-100">
+              <article key={item.title} className="overflow-hidden rounded-lg border border-[#0b6f9f]/60 bg-[#08203a] shadow-lg shadow-black/25">
+                <div className="aspect-[3/4] bg-[#061527]">
                   <img src={item.src} alt={item.title} className="h-full w-full object-cover" />
                 </div>
                 <div className="p-5">
-                  <h3 className="font-semibold text-gray-900">{item.title}</h3>
-                  <p className="mt-2 text-sm text-gray-600">{item.description}</p>
+                  <h3 className="font-semibold text-white">{item.title}</h3>
+                  <p className="mt-2 text-sm text-blue-100">{item.description}</p>
                 </div>
               </article>
             ))}
@@ -132,10 +132,10 @@ export function PublicHome({ onAdminAccess }: PublicHomeProps) {
         </div>
       </section>
 
-      <section className="bg-[#061527] px-4 py-16 text-white md:px-8">
+      <section className="bg-[#08203a] px-4 py-16 text-white md:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1fr_0.8fr] md:items-center">
           <div>
-            <p className="text-sm font-semibold uppercase text-[#FFD700]">Por que escolher</p>
+            <p className="text-sm font-semibold uppercase text-[#ff7a18]">Por que escolher</p>
             <h2 className="mt-2 text-3xl font-bold">Atendimento direto, organizado e com foco em solucao</h2>
             <p className="mt-4 text-blue-50">
               Da avaliacao ao funcionamento final, cada servico e tratado com criterio tecnico, limpeza na montagem e comunicacao clara.
@@ -144,7 +144,7 @@ export function PublicHome({ onAdminAccess }: PublicHomeProps) {
           <div className="space-y-4">
             {['Diagnostico em campo', 'Montagem de paineis', 'Manutencao preventiva', 'Suporte para orcamentos'].map((item) => (
               <div key={item} className="flex items-center gap-3">
-                <CheckCircle2 className="text-[#FFD700]" size={22} />
+                <CheckCircle2 className="text-[#ff7a18]" size={22} />
                 <span>{item}</span>
               </div>
             ))}
