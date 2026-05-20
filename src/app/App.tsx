@@ -17,7 +17,7 @@ const adminPages = ['dashboard', 'clientes', 'orcamentos', 'ordens', 'materiais'
 export default function App() {
   const [currentPage, setCurrentPage] = useState('inicio');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('autoNergAdmin') === 'true');
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleNavigate = (page: string) => {
     if (adminPages.includes(page) && !isAdmin) {
@@ -29,13 +29,11 @@ export default function App() {
   };
 
   const handleAdminLogin = () => {
-    localStorage.setItem('autoNergAdmin', 'true');
     setIsAdmin(true);
     setCurrentPage('dashboard');
   };
 
   const handleAdminLogout = () => {
-    localStorage.removeItem('autoNergAdmin');
     setIsAdmin(false);
     if (adminPages.includes(currentPage)) {
       setCurrentPage('inicio');
@@ -84,14 +82,15 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        currentPage={currentPage}
-        onNavigate={handleNavigate}
-        isAdmin={isAdmin}
-      />
+      {isAdmin && (
+        <Sidebar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+          isAdmin={isAdmin}
+        />
+      )}
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen">
@@ -100,6 +99,7 @@ export default function App() {
           onMenuClick={() => setSidebarOpen(!sidebarOpen)}
           title={pageTitle}
           isAdmin={isAdmin}
+          showMenu={isAdmin}
           onHomeClick={() => setCurrentPage('inicio')}
           onAdminClick={() => setCurrentPage(isAdmin ? 'dashboard' : 'admin')}
           onAdminLogout={handleAdminLogout}

@@ -9,12 +9,12 @@ import {
   Wrench,
   Zap
 } from 'lucide-react';
-import logoImage from '../../assets/auto-nerg-logo.jpeg';
-import painelImage from '../../assets/portfolio-painel-01.jpg';
-import bombasImage from '../../assets/portfolio-bombas-01.jpg';
-import medicaoImage from '../../assets/portfolio-medicao-01.jpg';
-import bombasFinalImage from '../../assets/portfolio-bombas-02.jpg';
-import comandoImage from '../../assets/portfolio-comando-01.jpeg';
+import logoImage from '../../assets/web/auto-nerg-logo.jpeg';
+import painelImage from '../../assets/web/portfolio-painel-01.jpg';
+import bombasImage from '../../assets/web/portfolio-bombas-01.jpg';
+import medicaoImage from '../../assets/web/portfolio-medicao-01.jpg';
+import bombasFinalImage from '../../assets/web/portfolio-bombas-02.jpg';
+import comandoImage from '../../assets/web/portfolio-comando-01.jpeg';
 import { Button } from '../components/Button';
 
 interface PublicHomeProps {

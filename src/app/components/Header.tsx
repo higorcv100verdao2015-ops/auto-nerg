@@ -5,23 +5,26 @@ interface HeaderProps {
   onMenuClick: () => void;
   title: string;
   isAdmin: boolean;
+  showMenu: boolean;
   onHomeClick: () => void;
   onAdminClick: () => void;
   onAdminLogout: () => void;
 }
 
-export function Header({ onMenuClick, title, isAdmin, onHomeClick, onAdminClick, onAdminLogout }: HeaderProps) {
+export function Header({ onMenuClick, title, isAdmin, showMenu, onHomeClick, onAdminClick, onAdminLogout }: HeaderProps) {
   return (
     <header className="bg-[#1a1a1a] text-white shadow-lg sticky top-0 z-50">
       <div className="flex items-center justify-between px-4 py-4">
         <div className="flex items-center gap-4">
-          <button
-            onClick={onMenuClick}
-            className="lg:hidden p-2 hover:bg-[#2d2d2d] rounded-lg transition-colors"
-            aria-label="Menu"
-          >
-            <Menu size={24} />
-          </button>
+          {showMenu && (
+            <button
+              onClick={onMenuClick}
+              className="lg:hidden p-2 hover:bg-[#2d2d2d] rounded-lg transition-colors"
+              aria-label="Menu"
+            >
+              <Menu size={24} />
+            </button>
+          )}
 
           <button type="button" onClick={onHomeClick} className="flex items-center gap-3 text-left">
             <div className="bg-[#FFD700] p-2 rounded-lg">
