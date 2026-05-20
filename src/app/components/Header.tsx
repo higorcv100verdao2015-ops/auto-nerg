@@ -5,11 +5,12 @@ interface HeaderProps {
   onMenuClick: () => void;
   title: string;
   isAdmin: boolean;
+  onHomeClick: () => void;
   onAdminClick: () => void;
   onAdminLogout: () => void;
 }
 
-export function Header({ onMenuClick, title, isAdmin, onAdminClick, onAdminLogout }: HeaderProps) {
+export function Header({ onMenuClick, title, isAdmin, onHomeClick, onAdminClick, onAdminLogout }: HeaderProps) {
   return (
     <header className="bg-[#1a1a1a] text-white shadow-lg sticky top-0 z-50">
       <div className="flex items-center justify-between px-4 py-4">
@@ -22,7 +23,7 @@ export function Header({ onMenuClick, title, isAdmin, onAdminClick, onAdminLogou
             <Menu size={24} />
           </button>
 
-          <div className="flex items-center gap-3">
+          <button type="button" onClick={onHomeClick} className="flex items-center gap-3 text-left">
             <div className="bg-[#FFD700] p-2 rounded-lg">
               <Zap size={24} className="text-black" />
             </div>
@@ -30,7 +31,7 @@ export function Header({ onMenuClick, title, isAdmin, onAdminClick, onAdminLogou
               <h1 className="font-bold text-xl">Auto&Nerg</h1>
               <p className="text-xs text-[#FFD700]">Eletrotécnica</p>
             </div>
-          </div>
+          </button>
         </div>
 
         <div className="flex items-center gap-4">

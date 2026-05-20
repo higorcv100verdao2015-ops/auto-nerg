@@ -8,6 +8,7 @@ import {
   Calendar,
   DollarSign,
   Settings,
+  Home,
   ShieldCheck,
   X,
   Zap
@@ -23,6 +24,7 @@ interface SidebarProps {
 }
 
 const menuItems = [
+  { id: 'inicio', label: 'Inicio', icon: Home },
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'clientes', label: 'Clientes', icon: Users },
   { id: 'orcamentos', label: 'Orçamentos', icon: FileText },
@@ -34,15 +36,12 @@ const menuItems = [
 ];
 
 export function Sidebar({ isOpen, onClose, currentPage, onNavigate, isAdmin }: SidebarProps) {
-  const adminItem = isAdmin
-    ? { id: 'clientes', label: 'Clientes', icon: Users }
-    : { id: 'admin', label: 'Acesso Admin', icon: ShieldCheck };
-
-  const visibleMenuItems = [
-    menuItems[0],
-    adminItem,
-    ...menuItems.slice(2),
-  ];
+  const visibleMenuItems = isAdmin
+    ? menuItems
+    : [
+        menuItems[0],
+        { id: 'admin', label: 'Acesso Admin', icon: ShieldCheck },
+      ];
 
   return (
     <>

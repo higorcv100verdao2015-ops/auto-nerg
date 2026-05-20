@@ -10,14 +10,17 @@ import { Agenda } from './pages/Agenda';
 import { Financeiro } from './pages/Financeiro';
 import { Configuracoes } from './pages/Configuracoes';
 import { AdminAccess } from './pages/AdminAccess';
+import { PublicHome } from './pages/PublicHome';
+
+const adminPages = ['dashboard', 'clientes', 'orcamentos', 'ordens', 'materiais', 'agenda', 'financeiro', 'configuracoes'];
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('dashboard');
+  const [currentPage, setCurrentPage] = useState('inicio');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('autoNergAdmin') === 'true');
 
   const handleNavigate = (page: string) => {
-    if (page === 'clientes' && !isAdmin) {
+    if (adminPages.includes(page) && !isAdmin) {
       setCurrentPage('admin');
       return;
     }
@@ -28,18 +31,19 @@ export default function App() {
   const handleAdminLogin = () => {
     localStorage.setItem('autoNergAdmin', 'true');
     setIsAdmin(true);
-    setCurrentPage('clientes');
+    setCurrentPage('dashboard');
   };
 
   const handleAdminLogout = () => {
     localStorage.removeItem('autoNergAdmin');
     setIsAdmin(false);
-    if (currentPage === 'clientes') {
-      setCurrentPage('dashboard');
+    if (adminPages.includes(currentPage)) {
+      setCurrentPage('inicio');
     }
   };
 
   const pageTitle = {
+    inicio: 'Inicio',
     dashboard: 'Dashboard',
     admin: 'Acesso Admin',
     clientes: 'Clientes',
@@ -53,26 +57,28 @@ export default function App() {
 
   const renderPage = () => {
     switch (currentPage) {
+      case 'inicio':
+        return <PublicHome onAdminAccess={() => setCurrentPage('admin')} />;
       case 'dashboard':
-        return <Dashboard onNavigate={handleNavigate} isAdmin={isAdmin} />;
+        return isAdmin ? <Dashboard onNavigate={handleNavigate} isAdmin={isAdmin} /> : <AdminAccess onLogin={handleAdminLogin} onCancel={() => setCurrentPage('inicio')} />;
       case 'admin':
-        return <AdminAccess onLogin={handleAdminLogin} onCancel={() => setCurrentPage('dashboard')} />;
+        return <AdminAccess onLogin={handleAdminLogin} onCancel={() => setCurrentPage('inicio')} />;
       case 'clientes':
-        return isAdmin ? <Clientes /> : <AdminAccess onLogin={handleAdminLogin} onCancel={() => setCurrentPage('dashboard')} />;
+        return isAdmin ? <Clientes /> : <AdminAccess onLogin={handleAdminLogin} onCancel={() => setCurrentPage('inicio')} />;
       case 'orcamentos':
-        return <Orcamentos />;
+        return isAdmin ? <Orcamentos /> : <AdminAccess onLogin={handleAdminLogin} onCancel={() => setCurrentPage('inicio')} />;
       case 'ordens':
-        return <OrdensServico />;
+        return isAdmin ? <OrdensServico /> : <AdminAccess onLogin={handleAdminLogin} onCancel={() => setCurrentPage('inicio')} />;
       case 'materiais':
-        return <Materiais />;
+        return isAdmin ? <Materiais /> : <AdminAccess onLogin={handleAdminLogin} onCancel={() => setCurrentPage('inicio')} />;
       case 'agenda':
-        return <Agenda />;
+        return isAdmin ? <Agenda /> : <AdminAccess onLogin={handleAdminLogin} onCancel={() => setCurrentPage('inicio')} />;
       case 'financeiro':
-        return <Financeiro />;
+        return isAdmin ? <Financeiro /> : <AdminAccess onLogin={handleAdminLogin} onCancel={() => setCurrentPage('inicio')} />;
       case 'configuracoes':
-        return <Configuracoes />;
+        return isAdmin ? <Configuracoes /> : <AdminAccess onLogin={handleAdminLogin} onCancel={() => setCurrentPage('inicio')} />;
       default:
-        return <Dashboard onNavigate={handleNavigate} isAdmin={isAdmin} />;
+        return <PublicHome onAdminAccess={() => setCurrentPage('admin')} />;
     }
   };
 
@@ -94,12 +100,13 @@ export default function App() {
           onMenuClick={() => setSidebarOpen(!sidebarOpen)}
           title={pageTitle}
           isAdmin={isAdmin}
-          onAdminClick={() => setCurrentPage(isAdmin ? 'clientes' : 'admin')}
+          onHomeClick={() => setCurrentPage('inicio')}
+          onAdminClick={() => setCurrentPage(isAdmin ? 'dashboard' : 'admin')}
           onAdminLogout={handleAdminLogout}
         />
 
         {/* Page Content */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
+        <main className={currentPage === 'inicio' ? 'flex-1 overflow-y-auto' : 'flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto'}>
           {renderPage()}
         </main>
 
