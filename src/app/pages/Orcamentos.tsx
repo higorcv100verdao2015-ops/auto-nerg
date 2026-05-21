@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/Card';
 import { Button } from '../components/Button';
 import { Input, Select, TextArea } from '../components/Input';
+import { jsPDF } from 'jspdf';
+import orcamentoLogo from '../../assets/web/orcamento-logo-0205.jpeg';
 import {
   FileText,
   Plus,
@@ -47,6 +49,40 @@ const orcamentosIniciais: Orcamento[] = [
     status: 'pendente'
   }
 ];
+
+const currencyFormatter = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL'
+});
+
+const formatCurrency = (value: number) => currencyFormatter.format(value);
+
+const formatDate = (value: string) =>
+  new Date(`${value}T00:00:00`).toLocaleDateString('pt-BR');
+
+const carregarImagemComoBase64 = (src: string): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const image = new Image();
+
+    image.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+
+      const context = canvas.getContext('2d');
+
+      if (!context) {
+        reject(new Error('Nao foi possivel processar a logo.'));
+        return;
+      }
+
+      context.drawImage(image, 0, 0);
+      resolve(canvas.toDataURL('image/jpeg'));
+    };
+
+    image.onerror = () => reject(new Error('Falha ao carregar a logo.'));
+    image.src = src;
+  });
 
 export function Orcamentos() {
   const [orcamentos, setOrcamentos] = useState<Orcamento[]>(orcamentosIniciais);
@@ -140,8 +176,121 @@ export function Orcamentos() {
     setShowModal(false);
   };
 
-  const exportarPDF = (orcamento: Orcamento) => {
-    alert('Funcionalidade de exportar PDF será implementada com biblioteca específica');
+  const exportarPDF = async (orcamento: Orcamento) => {
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margemLateral = 14;
+    let y = 12;
+
+    try {
+      const logoBase64 = await carregarImagemComoBase64(orcamentoLogo);
+      pdf.addImage(logoBase64, 'JPEG', margemLateral, y, 28, 28);
+    } catch (error) {
+      console.error('Erro ao carregar logo no PDF:', error);
+    }
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(19);
+    pdf.text('Orcamento', pageWidth - margemLateral, 18, { align: 'right' });
+
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(11);
+    pdf.text('Aut&Nerg Eletrotecnica', pageWidth - margemLateral, 24, { align: 'right' });
+    pdf.text(`Data: ${formatDate(orcamento.data)}`, pageWidth - margemLateral, 30, { align: 'right' });
+    pdf.text(`Numero: #${orcamento.id}`, pageWidth - margemLateral, 36, { align: 'right' });
+
+    y = 46;
+
+    pdf.setDrawColor(215, 215, 215);
+    pdf.setLineWidth(0.4);
+    pdf.rect(margemLateral, y, pageWidth - margemLateral * 2, 14);
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(11);
+    pdf.text('Cliente', margemLateral + 3, y + 5);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text(orcamento.cliente, margemLateral + 3, y + 11);
+
+    y += 22;
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(12);
+    pdf.text('Itens do Orcamento', margemLateral, y);
+    y += 6;
+
+    const subtotal = orcamento.itens.reduce((acc, item) => acc + item.valorTotal, 0);
+    const totalComDeslocamento = subtotal + orcamento.deslocamento;
+    const lucro = orcamento.valorTotal - totalComDeslocamento;
+
+    orcamento.itens.forEach((item, index) => {
+      if (y > pageHeight - 34) {
+        pdf.addPage();
+        y = 18;
+      }
+
+      const tipo = item.tipo === 'servico' ? 'Servico' : 'Material';
+      const descricao = pdf.splitTextToSize(item.descricao, pageWidth - margemLateral * 2 - 4);
+      const rowHeight = Math.max(8, descricao.length * 5 + 5);
+
+      if (y + rowHeight > pageHeight - 30) {
+        pdf.addPage();
+        y = 18;
+      }
+
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(10);
+      pdf.text(`${index + 1}. ${tipo}`, margemLateral, y);
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.text(descricao, margemLateral + 4, y + 5);
+      pdf.text(
+        `Qtd: ${item.quantidade}  |  Unitario: ${formatCurrency(item.valorUnitario)}  |  Total: ${formatCurrency(item.valorTotal)}`,
+        margemLateral + 4,
+        y + rowHeight - 1
+      );
+
+      y += rowHeight + 2;
+      pdf.setDrawColor(232, 232, 232);
+      pdf.line(margemLateral, y, pageWidth - margemLateral, y);
+      y += 5;
+    });
+
+    if (y > pageHeight - 55) {
+      pdf.addPage();
+      y = 18;
+    }
+
+    pdf.setDrawColor(215, 215, 215);
+    pdf.rect(margemLateral, y, pageWidth - margemLateral * 2, 30);
+    y += 7;
+
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(11);
+    pdf.text(`Subtotal: ${formatCurrency(subtotal)}`, margemLateral + 4, y);
+    y += 6;
+    pdf.text(`Deslocamento: ${formatCurrency(orcamento.deslocamento)}`, margemLateral + 4, y);
+    y += 6;
+    pdf.text(`Margem de lucro (${orcamento.margemLucro}%): ${formatCurrency(lucro)}`, margemLateral + 4, y);
+    y += 8;
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(13);
+    pdf.text(`Total: ${formatCurrency(orcamento.valorTotal)}`, margemLateral + 4, y);
+
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(9);
+    pdf.text(
+      'Obrigado pela confianca. Este orcamento foi gerado automaticamente pelo sistema Aut&Nerg.',
+      margemLateral,
+      pageHeight - 12
+    );
+
+    pdf.save(`orcamento-${orcamento.id}.pdf`);
   };
 
   const enviarWhatsApp = (orcamento: Orcamento) => {
@@ -437,3 +586,4 @@ export function Orcamentos() {
     </div>
   );
 }
+
