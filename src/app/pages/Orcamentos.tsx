@@ -60,6 +60,13 @@ const formatCurrency = (value: number) => currencyFormatter.format(value);
 const formatDate = (value: string) =>
   new Date(`${value}T00:00:00`).toLocaleDateString('pt-BR');
 
+const formatDateTime = (value: string) => {
+  const date = new Date(`${value}T00:00:00`);
+  const hh = String(date.getHours()).padStart(2, '0');
+  const mm = String(date.getMinutes()).padStart(2, '0');
+  return `${date.toLocaleDateString('pt-BR')} ${hh}:${mm}`;
+};
+
 const carregarImagemComoBase64 = (src: string): Promise<string> =>
   new Promise((resolve, reject) => {
     const image = new Image();
@@ -184,111 +191,201 @@ export function Orcamentos() {
     });
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
-    const margemLateral = 14;
-    let y = 12;
+    const margem = 8;
+    const conteudoLargura = pageWidth - margem * 2;
+    const xDescricao = margem + 3;
+    const xPreco = margem + 138;
+    const xQtd = margem + 165;
+    const xTotal = margem + 188;
+    let y = margem + 2;
+
+    const itensServico = orcamento.itens.filter((item) => item.tipo === 'servico');
+    const itensMaterial = orcamento.itens.filter((item) => item.tipo === 'material');
+    const subtotal = orcamento.itens.reduce((acc, item) => acc + item.valorTotal, 0);
+    const totalComDeslocamento = subtotal + orcamento.deslocamento;
+    const lucro = orcamento.valorTotal - totalComDeslocamento;
+    const numeroDocumento = `${new Date(orcamento.data).getFullYear()}${String(orcamento.id).slice(-4)}-${orcamento.itens.length}`;
+
+    const drawHeaderTabela = (startY: number, titulo: string) => {
+      const alturaCabecalho = 8;
+      const alturaLinha = 10;
+
+      pdf.setDrawColor(20, 20, 20);
+      pdf.setLineWidth(0.2);
+
+      pdf.setFillColor(238, 238, 238);
+      pdf.rect(margem, startY, 132, alturaCabecalho, 'FD');
+      pdf.rect(xPreco - 5, startY, 27, alturaCabecalho, 'FD');
+      pdf.rect(xQtd - 5, startY, 23, alturaCabecalho, 'FD');
+      pdf.rect(xTotal - 5, startY, 14, alturaCabecalho, 'FD');
+
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(11);
+      pdf.text(titulo, margem + 2, startY + 5.5);
+      pdf.text('Preco', xPreco, startY + 5.5);
+      pdf.text('Quantidade', xQtd, startY + 5.5);
+      pdf.text('V', xTotal, startY + 5.5);
+
+      return { yLinha: startY + alturaCabecalho, alturaLinha };
+    };
+
+    const drawLinhaTabela = (startY: number, item: ItemOrcamento) => {
+      const alturaLinha = 10;
+      pdf.rect(margem, startY, 132, alturaLinha);
+      pdf.rect(xPreco - 5, startY, 27, alturaLinha);
+      pdf.rect(xQtd - 5, startY, 23, alturaLinha);
+      pdf.rect(xTotal - 5, startY, 14, alturaLinha);
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(9.6);
+      const descricao = pdf.splitTextToSize(item.descricao, 126);
+      const descricaoVisivel = descricao[0] ?? '-';
+      pdf.text(descricaoVisivel, margem + 2, startY + 6.2);
+      pdf.text(formatCurrency(item.valorUnitario), xPreco, startY + 6.2);
+      pdf.text(String(item.quantidade), xQtd, startY + 6.2);
+      pdf.text(formatCurrency(item.valorTotal), xTotal, startY + 6.2);
+
+      return startY + alturaLinha;
+    };
+
+    pdf.setDrawColor(15, 15, 15);
+    pdf.setLineWidth(0.4);
+    pdf.rect(margem, margem, conteudoLargura, pageHeight - margem * 2 - 56);
 
     try {
       const logoBase64 = await carregarImagemComoBase64(orcamentoLogo);
-      pdf.addImage(logoBase64, 'JPEG', margemLateral, y, 28, 28);
+      pdf.addImage(logoBase64, 'JPEG', margem + 2, y, 28, 28);
     } catch (error) {
       console.error('Erro ao carregar logo no PDF:', error);
     }
 
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(19);
-    pdf.text('Orcamento', pageWidth - margemLateral, 18, { align: 'right' });
+    pdf.setFontSize(22);
+    pdf.text('Orcamento', pageWidth - margem - 3, y + 6, { align: 'right' });
 
     pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(11);
-    pdf.text('Aut&Nerg Eletrotecnica', pageWidth - margemLateral, 24, { align: 'right' });
-    pdf.text(`Data: ${formatDate(orcamento.data)}`, pageWidth - margemLateral, 30, { align: 'right' });
-    pdf.text(`Numero: #${orcamento.id}`, pageWidth - margemLateral, 36, { align: 'right' });
+    pdf.setFontSize(10.5);
+    pdf.text('N do Documento', pageWidth - margem - 54, y + 14);
+    pdf.text(numeroDocumento, pageWidth - margem - 3, y + 14, { align: 'right' });
+    pdf.text('Data do Documento', pageWidth - margem - 54, y + 21);
+    pdf.text(formatDateTime(orcamento.data), pageWidth - margem - 3, y + 21, { align: 'right' });
 
-    y = 46;
-
-    pdf.setDrawColor(215, 215, 215);
-    pdf.setLineWidth(0.4);
-    pdf.rect(margemLateral, y, pageWidth - margemLateral * 2, 14);
-
+    y += 33;
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(11);
-    pdf.text('Cliente', margemLateral + 3, y + 5);
+    pdf.setFontSize(10.8);
+    pdf.text('Cliente:', pageWidth - margem - 54, y);
     pdf.setFont('helvetica', 'normal');
-    pdf.text(orcamento.cliente, margemLateral + 3, y + 11);
-
-    y += 22;
-
+    pdf.text(orcamento.cliente, pageWidth - margem - 3, y, { align: 'right' });
+    y += 7;
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(12);
-    pdf.text('Itens do Orcamento', margemLateral, y);
-    y += 6;
+    pdf.text('Contato:', pageWidth - margem - 54, y);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text('Nao informado', pageWidth - margem - 3, y, { align: 'right' });
 
-    const subtotal = orcamento.itens.reduce((acc, item) => acc + item.valorTotal, 0);
-    const totalComDeslocamento = subtotal + orcamento.deslocamento;
-    const lucro = orcamento.valorTotal - totalComDeslocamento;
+    y += 10;
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(11);
+    pdf.text('Descricao de Atividades', xDescricao, y);
+    y += 4;
 
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(9.2);
     orcamento.itens.forEach((item, index) => {
-      if (y > pageHeight - 34) {
-        pdf.addPage();
-        y = 18;
+      if (index > 9) {
+        return;
       }
 
-      const tipo = item.tipo === 'servico' ? 'Servico' : 'Material';
-      const descricao = pdf.splitTextToSize(item.descricao, pageWidth - margemLateral * 2 - 4);
-      const rowHeight = Math.max(8, descricao.length * 5 + 5);
-
-      if (y + rowHeight > pageHeight - 30) {
-        pdf.addPage();
-        y = 18;
-      }
-
-      pdf.setFont('helvetica', 'bold');
-      pdf.setFontSize(10);
-      pdf.text(`${index + 1}. ${tipo}`, margemLateral, y);
-
-      pdf.setFont('helvetica', 'normal');
-      pdf.text(descricao, margemLateral + 4, y + 5);
-      pdf.text(
-        `Qtd: ${item.quantidade}  |  Unitario: ${formatCurrency(item.valorUnitario)}  |  Total: ${formatCurrency(item.valorTotal)}`,
-        margemLateral + 4,
-        y + rowHeight - 1
-      );
-
-      y += rowHeight + 2;
-      pdf.setDrawColor(232, 232, 232);
-      pdf.line(margemLateral, y, pageWidth - margemLateral, y);
-      y += 5;
+      const textoItem = `${index + 1}. ${item.descricao}`;
+      const linhas = pdf.splitTextToSize(textoItem, conteudoLargura - 8);
+      const linhaPrincipal = linhas[0] ?? textoItem;
+      pdf.text(linhaPrincipal, xDescricao, y + 4.5);
+      y += 7;
     });
 
-    if (y > pageHeight - 55) {
-      pdf.addPage();
-      y = 18;
+    if (orcamento.itens.length > 10) {
+      pdf.setFont('helvetica', 'italic');
+      pdf.text(`...e mais ${orcamento.itens.length - 10} item(ns) no sistema.`, xDescricao, y + 2.5);
+      pdf.setFont('helvetica', 'normal');
+      y += 7;
     }
 
-    pdf.setDrawColor(215, 215, 215);
-    pdf.rect(margemLateral, y, pageWidth - margemLateral * 2, 30);
-    y += 7;
+    y += 6;
+    const servicoHeader = drawHeaderTabela(y, 'Servicos');
+    y = servicoHeader.yLinha;
+
+    if (itensServico.length === 0) {
+      const itemVazio: ItemOrcamento = {
+        id: -1,
+        tipo: 'servico',
+        descricao: '-',
+        quantidade: 0,
+        valorUnitario: 0,
+        valorTotal: 0
+      };
+      y = drawLinhaTabela(y, itemVazio);
+    } else {
+      itensServico.forEach((item) => {
+        y = drawLinhaTabela(y, item);
+      });
+    }
+
+    y += 6;
+    const materialHeader = drawHeaderTabela(y, 'Materiais');
+    y = materialHeader.yLinha;
+
+    if (itensMaterial.length === 0) {
+      const itemVazio: ItemOrcamento = {
+        id: -2,
+        tipo: 'material',
+        descricao: '-',
+        quantidade: 0,
+        valorUnitario: 0,
+        valorTotal: 0
+      };
+      y = drawLinhaTabela(y, itemVazio);
+    } else {
+      itensMaterial.forEach((item) => {
+        y = drawLinhaTabela(y, item);
+      });
+    }
+
+    y += 6;
+    pdf.setLineWidth(0.2);
+    pdf.rect(margem + 95, y, 85, 8);
+    pdf.rect(margem + 95, y + 8, 85, 8);
+    pdf.rect(margem + 95, y + 16, 85, 10);
 
     pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(11);
-    pdf.text(`Subtotal: ${formatCurrency(subtotal)}`, margemLateral + 4, y);
-    y += 6;
-    pdf.text(`Deslocamento: ${formatCurrency(orcamento.deslocamento)}`, margemLateral + 4, y);
-    y += 6;
-    pdf.text(`Margem de lucro (${orcamento.margemLucro}%): ${formatCurrency(lucro)}`, margemLateral + 4, y);
-    y += 8;
+    pdf.setFontSize(10);
+    pdf.text('Subtotal', margem + 98, y + 5.5);
+    pdf.text(formatCurrency(totalComDeslocamento), margem + 177, y + 5.5, { align: 'right' });
+    pdf.text(`Margem de lucro (${orcamento.margemLucro}%)`, margem + 98, y + 13.5);
+    pdf.text(formatCurrency(lucro), margem + 177, y + 13.5, { align: 'right' });
 
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(13);
-    pdf.text(`Total: ${formatCurrency(orcamento.valorTotal)}`, margemLateral + 4, y);
+    pdf.text('Preco Final', margem + 98, y + 22.5);
+    pdf.text(formatCurrency(orcamento.valorTotal), margem + 177, y + 22.5, { align: 'right' });
+
+    y += 35;
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(10);
+    pdf.text('Garantia da mao de obra:', xDescricao, y);
+    pdf.setFont('helvetica', 'normal');
+    pdf.text('90 dias', xDescricao + 42, y);
+
+    y += 10;
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Observacoes', xDescricao, y);
+    y += 5;
 
     pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(9);
-    pdf.text(
-      'Obrigado pela confianca. Este orcamento foi gerado automaticamente pelo sistema Aut&Nerg.',
-      margemLateral,
-      pageHeight - 12
-    );
+    pdf.setFontSize(9.2);
+    const observacao = `Orcamento gerado automaticamente para ${orcamento.cliente}. Pagamento: PIX, dinheiro, cartao de credito ou boleto.`;
+    const linhasObs = pdf.splitTextToSize(observacao, conteudoLargura - 8);
+    pdf.text(linhasObs, xDescricao, y + 4);
+
+    pdf.setFontSize(8.5);
+    pdf.text('1/1', pageWidth - margem - 3, pageHeight - margem - 2, { align: 'right' });
 
     pdf.save(`orcamento-${orcamento.id}.pdf`);
   };
